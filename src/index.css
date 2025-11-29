@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-orange: #FF6B00;
+}
+
+html, body, #root {
+  height: 100%;
+}

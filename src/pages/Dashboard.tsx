@@ -1,3 +1,4 @@
+// Dashboard.tsx
 import React from "react";
 import { SummaryCards } from '../components/dashboard/SummaryCards';
 import { ActiveSponsorships } from '../components/dashboard/ActiveSponsorships';
@@ -32,3 +33,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

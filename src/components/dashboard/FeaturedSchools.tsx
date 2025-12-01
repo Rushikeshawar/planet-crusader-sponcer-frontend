@@ -1,4 +1,6 @@
+
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
@@ -18,6 +20,8 @@ interface FeaturedSchoolsProps {
 }
 
 export const FeaturedSchools: React.FC<FeaturedSchoolsProps> = ({ schools }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="bg-white rounded-2xl border border-[#E5E7EB] space-y-6"
@@ -37,6 +41,7 @@ export const FeaturedSchools: React.FC<FeaturedSchoolsProps> = ({ schools }) => 
           variant="primary"
           icon={ChevronRight}
           iconPosition="right"
+          onClick={() => navigate('/explore')}
         >
           Explore All
         </Button>
@@ -93,3 +98,4 @@ export const FeaturedSchools: React.FC<FeaturedSchoolsProps> = ({ schools }) => 
     </div>
   );
 };
+

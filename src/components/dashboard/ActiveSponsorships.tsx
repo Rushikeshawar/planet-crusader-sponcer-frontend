@@ -1,4 +1,6 @@
+
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Sprout, Users } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
@@ -20,6 +22,8 @@ interface ActiveSponsorshipsProps {
 }
 
 export const ActiveSponsorships: React.FC<ActiveSponsorshipsProps> = ({ sponsorships }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="bg-white rounded-2xl border border-[#E5E7EB] space-y-6"
@@ -39,6 +43,7 @@ export const ActiveSponsorships: React.FC<ActiveSponsorshipsProps> = ({ sponsors
           variant="primary"
           icon={ChevronRight}
           iconPosition="right"
+          onClick={() => navigate('/sponsorships')}
         >
           View All
         </Button>

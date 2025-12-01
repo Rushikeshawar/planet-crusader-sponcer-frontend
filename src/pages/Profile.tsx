@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Briefcase, Calendar, Bell, Lock } from 'lucide-react';
+import { Bell } from 'lucide-react';
+import { Card } from '../components/common/Card';
+import { Badge } from '../components/common/Badge';
+import { Button } from '../components/common/Button';
+import { ProfileHeader } from '../components/profile/ProfileHeader';
+import { ContributionSummary } from '../components/profile/ContributionSummary';
+import { NotificationToggle } from '../components/profile/NotificationToggle';
+import { SecuritySettings } from '../components/profile/SecuritySettings';
 
 type NotificationKey = 'emailUpdates' | 'schoolMessages' | 'impactReports' | 'newRequests';
 
@@ -22,6 +29,29 @@ const ProfileSettings = () => {
   const toggleNotification = (key: NotificationKey) => {
     setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const notificationSettings = [
+    {
+      key: 'emailUpdates' as NotificationKey,
+      label: 'Email Updates',
+      desc: 'Receive general platform updates via email'
+    },
+    {
+      key: 'schoolMessages' as NotificationKey,
+      label: 'School Messages',
+      desc: 'Get notified when schools send you messages'
+    },
+    {
+      key: 'impactReports' as NotificationKey,
+      label: 'Impact Reports',
+      desc: 'Monthly impact reports from sponsored schools'
+    },
+    {
+      key: 'newRequests' as NotificationKey,
+      label: 'New Requests',
+      desc: 'Alerts for new sponsorship requests'
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -68,108 +98,45 @@ const ProfileSettings = () => {
         {activeTab === 'profile' && (
           <div className="space-y-6">
             {/* Profile Header Card */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 flex items-start justify-between">
-              <div className="flex items-start gap-9">
-                {/* Avatar */}
-                <div className="relative">
-                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-[#FF8904] to-[#F54900] flex items-center justify-center">
-                    <span className="text-white text-[30px] font-normal leading-9">GC</span>
-                  </div>
-                  <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#F1833F] flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="space-y-8 pt-0">
-                  <h2 className="text-base font-normal text-gray-900">GreenCorp Foundation</h2>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Briefcase className="w-4 h-4" />
-                      <span className="text-base">Corporate</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-base">United States</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Mail className="w-4 h-4" />
-                      <span className="text-base">jane.smith@greencorp.org</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button className="px-6 py-2.5 bg-[#F1833F] hover:bg-[#E67336] text-white rounded-[14px] font-normal text-base transition-colors">
-                Edit Profile
-              </button>
-            </div>
+            <ProfileHeader
+              name="GreenCorp Foundation"
+              type="Corporate"
+              location="United States"
+              email="jane.smith@greencorp.org"
+              initials="GC"
+            />
 
             {/* About Section */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-              <h3 className="text-lg font-normal text-gray-900">About</h3>
+            <Card padding="md">
+              <h3 className="text-lg font-normal text-gray-900 mb-4">About</h3>
               <p className="text-gray-600 text-base">
                 A leading corporate foundation dedicated to environmental sustainability and education.
               </p>
-            </div>
+            </Card>
 
             {/* Focus Areas */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-              <h3 className="text-base font-normal text-gray-900">Focus Areas</h3>
+            <Card padding="md">
+              <h3 className="text-base font-normal text-gray-900 mb-4">Focus Areas</h3>
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-2.5 rounded-[14px] bg-[#FFF7ED] text-[#F54900] text-base font-normal">
-                  Climate Action
-                </span>
-                <span className="px-4 py-2.5 rounded-[14px] bg-[#FFF7ED] text-[#F54900] text-base font-normal">
-                  Clean Energy
-                </span>
-                <span className="px-4 py-2.5 rounded-[14px] bg-[#FFF7ED] text-[#F54900] text-base font-normal">
-                  Quality Education
-                </span>
+                {['Climate Action', 'Clean Energy', 'Quality Education'].map((area) => (
+                  <Badge key={area} bgColor="#FFF7ED" textColor="#F54900" size="md">
+                    {area}
+                  </Badge>
+                ))}
               </div>
-            </div>
+            </Card>
 
             {/* Contribution Summary */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
-              <h3 className="text-base font-normal text-gray-900">Contribution Summary</h3>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-5 h-5">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <rect x="7" y="2" width="6" height="16" stroke="#4A5565" strokeWidth="1.67"/>
-                        <rect x="2" y="8" width="5" height="10" stroke="#4A5565" strokeWidth="1.67"/>
-                      </svg>
-                    </div>
-                    <span className="text-base">Total Invested</span>
-                  </div>
-                  <p className="text-gray-900 text-base font-normal">$70,000</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-5 h-5">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M10 3L12 8H17L13 11L14 16L10 13L6 16L7 11L3 8H8L10 3Z" stroke="#4A5565" strokeWidth="1.67"/>
-                      </svg>
-                    </div>
-                    <span className="text-base">Schools Supported</span>
-                  </div>
-                  <p className="text-gray-900 text-base font-normal">3</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Calendar className="w-5 h-5" />
-                    <span className="text-base">Member Since</span>
-                  </div>
-                  <p className="text-gray-900 text-base font-normal">June 2024</p>
-                </div>
-              </div>
-            </div>
+            <ContributionSummary
+              totalInvested="$70,000"
+              schoolsSupported={3}
+              memberSince="June 2024"
+            />
 
             {/* Logout Button */}
-            <button className="px-10 py-3 bg-[#CA000E] hover:bg-[#B0000C] text-white rounded-[14px] font-bold text-base transition-colors">
+            <Button variant="danger" className="bg-[#CA000E] hover:bg-[#B0000C] font-bold px-10">
               Log Out
-            </button>
+            </Button>
           </div>
         )}
 
@@ -177,68 +144,32 @@ const ProfileSettings = () => {
         {activeTab === 'settings' && (
           <div className="space-y-6">
             {/* Notification Preferences */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
-              <div className="flex items-center gap-3">
+            <Card padding="md">
+              <div className="flex items-center gap-3 mb-6">
                 <Bell className="w-6 h-6 text-[#F54900]" />
                 <h3 className="text-base font-normal text-gray-900">Notification Preferences</h3>
               </div>
 
               <div className="space-y-4">
-                {[
-                  { key: 'emailUpdates' as NotificationKey, label: 'Email Updates', desc: 'Receive general platform updates via email' },
-                  { key: 'schoolMessages' as NotificationKey, label: 'School Messages', desc: 'Get notified when schools send you messages' },
-                  { key: 'impactReports' as NotificationKey, label: 'Impact Reports', desc: 'Monthly impact reports from sponsored schools' },
-                  { key: 'newRequests' as NotificationKey, label: 'New Requests', desc: 'Alerts for new sponsorship requests' }
-                ].map(({ key, label, desc }) => (
-                  <div key={key} className="bg-[#F9FAFB] rounded-[14px] p-5 flex items-center justify-between min-h-[84px]">
-                    <div className="space-y-1">
-                      <h4 className="text-base font-normal text-gray-900">{label}</h4>
-                      <p className="text-gray-600 text-base">{desc}</p>
-                    </div>
-                    <button
-                      onClick={() => toggleNotification(key)}
-                      className={`relative w-[52px] h-8 rounded-full transition-colors ${
-                        notifications[key] ? 'bg-[#F1833F]' : 'bg-gray-300'
-                      }`}
-                    >
-                      <div
-                        className={`absolute top-0.5 w-7 h-7 bg-white rounded-full shadow-sm transition-transform ${
-                          notifications[key] ? 'translate-x-[22px]' : 'translate-x-0.5'
-                        }`}
-                        style={{
-                          boxShadow: '0px 3px 1px rgba(0, 0, 0, 0.06)',
-                          border: '0.5px solid rgba(0, 0, 0, 0.04)'
-                        }}
-                      />
-                    </button>
-                  </div>
+                {notificationSettings.map(({ key, label, desc }) => (
+                  <NotificationToggle
+                    key={key}
+                    label={label}
+                    description={desc}
+                    enabled={notifications[key]}
+                    onToggle={() => toggleNotification(key)}
+                  />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Password & Security */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
-              <div className="flex items-center gap-3">
-                <Lock className="w-6 h-6 text-[#F54900]" />
-                <h3 className="text-base font-normal text-gray-900">Password & Security</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-[#F9FAFB] rounded-[14px] p-4 min-h-[84px] flex flex-col justify-center">
-                  <h4 className="text-base font-normal text-gray-900">Change Password</h4>
-                  <p className="text-gray-600 text-base mt-1">Update your account password</p>
-                </div>
-                <div className="bg-[#F9FAFB] rounded-[14px] p-4 min-h-[84px] flex flex-col justify-center">
-                  <h4 className="text-base font-normal text-gray-900">Two-Factor Authentication</h4>
-                  <p className="text-gray-600 text-base mt-1">Add an extra layer of security</p>
-                </div>
-              </div>
-            </div>
+            <SecuritySettings />
 
             {/* Save Settings Button */}
-            <button className="px-6 py-3 bg-[#FF6900] hover:bg-[#E65F00] text-white rounded-[14px] font-normal text-base transition-colors">
+            <Button variant="primary">
               Save Settings
-            </button>
+            </Button>
           </div>
         )}
       </div>

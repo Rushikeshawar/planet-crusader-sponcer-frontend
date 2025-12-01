@@ -4,6 +4,7 @@ import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { ProgressBar } from '../common/ProgressBar';
 import { type Project } from '../../data/fundingData';
+import shvrBadge from '../../assets/shvr_badge.png';
 
 interface ProjectCardProps {
   project: Project;
@@ -25,9 +26,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewDetails
         </div>
         <div className="flex items-center gap-3">
           {project.badge && (
-            <Badge bgColor="rgba(220, 252, 231, 0.7)" textColor="#166534" size="md">
-              {project.badge}
-            </Badge>
+            <div className="h-8 flex items-center justify-center">
+              <img 
+                src={shvrBadge} 
+                alt={project.badge}
+                className="h-8 w-auto object-contain"
+              />
+            </div>
           )}
           <Button variant="primary" size="sm" onClick={onViewDetails}>
             View Details

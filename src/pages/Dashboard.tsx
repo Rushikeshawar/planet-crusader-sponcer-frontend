@@ -1,4 +1,4 @@
-// Dashboard.tsx
+// src/pages/Dashboard.tsx
 import React from "react";
 import { SummaryCards } from '../components/dashboard/SummaryCards';
 import { ActiveSponsorships } from '../components/dashboard/ActiveSponsorships';
@@ -11,9 +11,9 @@ import {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gray-50 p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50 p-6 pt-4 space-y-5">
       {/* Welcome Section */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         <h1 className="text-2xl font-normal text-[#101828] leading-9">
           Welcome back! 👋
         </h1>
@@ -33,4 +33,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

@@ -1,3 +1,4 @@
+// src/pages/SchoolDetail.tsx
 import React, { useState } from 'react';
 import { SchoolHeader } from '../components/school/SchoolHeader';
 import { SchoolCard } from '../components/school/SchoolCard';
@@ -23,7 +24,7 @@ const SchoolDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <div className="max-w-5xl mx-auto p-6 pt-4 space-y-5">
         {/* School Header */}
         <SchoolHeader name={school.name} location={school.location} />
 

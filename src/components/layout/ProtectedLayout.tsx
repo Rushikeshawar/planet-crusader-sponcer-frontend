@@ -3,7 +3,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
-import Header from "./Header"; // You'll create this next
+import Header from "./Header";
 
 export default function ProtectedLayout() {
   const { isLoggedIn, isApproved } = useAuth();
@@ -14,15 +14,15 @@ export default function ProtectedLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Fixed Header - exactly 63px as in your Figma */}
+      {/* Fixed Header - exactly 64px (h-16) as in Figma */}
       <Header />
 
       <div className="flex">
-        {/* Fixed Sidebar - starts exactly at 63px from top */}
+        {/* Fixed Sidebar - starts exactly at 64px from top */}
         <Sidebar />
 
         {/* Main Content Area - pushed right & below header */}
-        <main className="flex-1 pt-[63px] md:ml-64 min-h-screen">
+        <main className="flex-1 pt-0 md:ml-64 min-h-screen">
           <Outlet />
         </main>
       </div>

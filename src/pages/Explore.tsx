@@ -1,3 +1,4 @@
+// src/pages/Explore.tsx
 import React, { useState } from 'react';
 import { Grid, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -42,11 +43,11 @@ export default function ExploreOrganizations() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 space-y-6">
-      <div className="max-w-[960px] mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50 p-6 pt-4 space-y-5">
+      <div className="max-w-[960px] mx-auto space-y-5">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <div className="space-y-2">
+          <div className="space-y-1">
             <h1 className="text-2xl font-normal text-[#101828] leading-9">
               Explore Organizations
             </h1>

@@ -1,3 +1,6 @@
+
+// ================================================================
+// SchoolActivities.tsx
 import React from 'react';
 import { Users, Calendar, Target } from 'lucide-react';
 import { Card } from '../common/Card';
@@ -60,4 +63,4 @@ export const SchoolActivities: React.FC<SchoolActivitiesProps> = ({ activities, 
       </div>
     </Card>
   );
-  };
+};

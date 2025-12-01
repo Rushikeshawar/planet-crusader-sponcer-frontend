@@ -1,3 +1,4 @@
+// src/router/routes.tsx
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
@@ -7,13 +8,14 @@ import ProtectedLayout from "../components/layout/ProtectedLayout";
 import Dashboard from "../pages/Dashboard";
 import Explore from "../pages/Explore";
 import SchoolDetail from "../pages/SchoolDetail";
-import NGODetail from "../pages/NGODetail"; // NEW IMPORT
+import NGODetail from "../pages/NGODetail";
 import Sponsorships from "../pages/Sponsorships";
 import RequestsApprovals from "../pages/RequestsApprovals";
 import FundingImpact from "../pages/FundingImpact";
 import Performance from "../pages/Performance";
 import Messages from "../pages/Messages";
 import Profile from "../pages/Profile";
+import ScrollToTop from "../components/ScrollToTop";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/login" replace /> },
@@ -22,12 +24,17 @@ const router = createBrowserRouter([
   { path: "/awaiting-approval", element: <AwaitingApproval /> },
   {
     path: "/",
-    element: <ProtectedLayout />,
+    element: (
+      <>
+        <ScrollToTop />
+        <ProtectedLayout />
+      </>
+    ),
     children: [
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/explore", element: <Explore /> },
       { path: "/school/:id", element: <SchoolDetail /> },
-      { path: "/ngo/:id", element: <NGODetail /> }, // NEW ROUTE
+      { path: "/ngo/:id", element: <NGODetail /> },
       { path: "/sponsorships", element: <Sponsorships /> },
       { path: "/requests-approvals", element: <RequestsApprovals /> },
       { path: "/funding-impact", element: <FundingImpact /> },

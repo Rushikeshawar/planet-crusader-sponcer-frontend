@@ -1,8 +1,10 @@
+// SchoolRoadmap.tsx
 import React from 'react';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { ProgressBar } from '../common/ProgressBar';
+import shvrBadge from '../../assets/shvr_badge.png';
 
 interface Roadmap {
   title: string;
@@ -32,9 +34,13 @@ export const SchoolRoadmap: React.FC<SchoolRoadmapProps> = ({ roadmap, onSponsor
             <p className="text-gray-600 text-sm">{roadmap.desc}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge bgColor="rgba(220, 252, 231, 0.7)" textColor="#000" size="md">
-              {roadmap.badge}
-            </Badge>
+            <div className="h-8 flex items-center justify-center">
+              <img 
+                src={shvrBadge} 
+                alt={roadmap.badge}
+                className="h-8 w-auto object-contain"
+              />
+            </div>
             <Badge bgColor="#3F7E44" textColor="white" size="md">
               SDG 13
             </Badge>

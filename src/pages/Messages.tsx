@@ -17,7 +17,7 @@ const MessagesAndFeedback = () => {
   };
 
   return (
-    <div className="max-w-[960px] mx-auto p-8">
+    <div className="max-w-[960px] mx-auto p-3">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>

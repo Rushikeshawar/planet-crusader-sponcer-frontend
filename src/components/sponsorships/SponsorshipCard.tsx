@@ -5,6 +5,7 @@ import { Badge } from '../common/Badge';
 import { ProgressBar } from '../common/ProgressBar';
 import { IconWrapper } from '../common/IconWrapper';
 import { type Sponsorship } from '../../data/sponsorshipsData';
+import shvrBadge from '../../assets/shvr_badge.png';
 
 interface SponsorshipCardProps {
   sponsorship: Sponsorship;
@@ -56,9 +57,13 @@ export const SponsorshipCard: React.FC<SponsorshipCardProps> = ({ sponsorship })
           
           <div className="flex items-center gap-2">
             {badge && (
-              <Badge bgColor="rgba(220, 252, 231, 0.7)" textColor="#000" size="md">
-                {badge}
-              </Badge>
+              <div className="h-8 flex items-center justify-center">
+                <img 
+                  src={shvrBadge} 
+                  alt={badge}
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
             )}
             <Badge variant={statusConfig[status].variant} size="md">
               {status}

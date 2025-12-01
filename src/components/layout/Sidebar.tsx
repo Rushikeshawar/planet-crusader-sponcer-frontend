@@ -5,7 +5,7 @@ const items = [
   { to: "/dashboard",          label: "Dashboard Overview",     icon: Home },
   { to: "/explore",            label: "Explore Organizations",  icon: Globe },
   { to: "/sponsorships",       label: "Sponsorships",           icon: Heart },
-  { to: "/requests-approvals", label: "Requests & Approvals",   icon: FileCheck, divider: true  }, // NEW ITEM
+  { to: "/requests-approvals", label: "Requests & Approvals",   icon: FileCheck, divider: true  },
   { to: "/funding-impact",     label: "Funding & Impact",       icon: DollarSign},
   { to: "/performance",        label: "Performance Insights",   icon: TrendingUp },
   { to: "/messages",           label: "Messages & Feedback",    icon: MessageSquare },
@@ -14,18 +14,18 @@ const items = [
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-[63px] bottom-0 w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+    <aside className="fixed left-0 top-[56px] bottom-0 w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto">
       <div className="flex flex-col h-full">
-        <nav className="px-6 pt-8 pb-10 flex-1 px-4 pb-8">
+        <nav className="px-4 pt-4 pb-8 flex-1">
           {items.map((item) => {
             const Icon = item.icon;
             return (
               <div key={item.to}>
-                {item.divider && <div className="h-px bg-gray-200 my-6 mx-4" />}
+                {item.divider && <div className="h-px bg-gray-200 my-4 mx-2" />}
                 <NavLink
                   to={item.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-4 py-3 mb-1 text-sm font-medium transition-all ${
+                    `flex items-center gap-3 rounded-xl px-4 py-2.5 mb-1 text-sm font-medium transition-all ${
                       isActive
                         ? "bg-orange-50 text-orange-600 shadow-sm"
                         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"

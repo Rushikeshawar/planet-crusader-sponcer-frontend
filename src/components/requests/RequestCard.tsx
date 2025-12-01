@@ -4,6 +4,7 @@ import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { type Request } from '../../data/requestsData';
+import shvrBadge from '../../assets/shvr_badge.png';
 
 interface RequestCardProps {
   request: Request;
@@ -52,8 +53,12 @@ export const RequestCard: React.FC<RequestCardProps> = ({
             </Badge>
           </div>
           {request.schoolBadge && (
-            <div className="px-2.5 py-1 bg-green-100 border border-black rounded-[10px] text-sm">
-              {request.schoolBadge}
+            <div className="h-8 flex items-center justify-center">
+              <img 
+                src={shvrBadge} 
+                alt={request.schoolBadge}
+                className="h-8 w-auto object-contain"
+              />
             </div>
           )}
         </div>

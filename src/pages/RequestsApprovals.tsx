@@ -17,7 +17,7 @@ const RequestsApprovals = () => {
   });
 
   return (
-    <div className="max-w-[960px] mx-auto p-8 space-y-6">
+    <div className="max-w-[960px] mx-auto p-3 space-y-6">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-2xl font-normal text-gray-900 leading-9">Requests & Approvals</h1>

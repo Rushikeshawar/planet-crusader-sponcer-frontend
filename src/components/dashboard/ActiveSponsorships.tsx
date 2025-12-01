@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Sprout, Users } from 'lucide-react';
@@ -6,6 +5,7 @@ import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
 import { ProgressBar } from '../common/ProgressBar';
+import shvrBadge from '../../assets/shvr_badge.png';
 
 interface Sponsorship {
   title: string;
@@ -68,16 +68,12 @@ export const ActiveSponsorships: React.FC<ActiveSponsorshipsProps> = ({ sponsors
 
               <div className="flex items-center gap-2">
                 {item.badge && (
-                  <div
-                    className="h-8 px-2.5 rounded-[10px] flex items-center justify-center"
-                    style={{
-                      background: "rgba(217, 255, 220, 0.70)",
-                      border: "0.5px solid black",
-                    }}
-                  >
-                    <span className="text-sm font-normal text-black leading-5">
-                      {item.badge}
-                    </span>
+                  <div className="h-8 flex items-center justify-center">
+                    <img 
+                      src={shvrBadge} 
+                      alt={item.badge}
+                      className="h-8 w-auto object-contain"
+                    />
                   </div>
                 )}
 

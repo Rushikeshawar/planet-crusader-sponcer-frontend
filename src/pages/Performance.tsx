@@ -1,67 +1,236 @@
-import SummaryCard from "../components/ui/SummaryCard";
+import React, { useState } from 'react';
+import { Download, Activity, TrendingUp } from 'lucide-react';
+import {
+  performanceStats,
+  topOrganizations,
+  regionalImpact,
+  type Organization,
+  type PerformanceStat
+} from '../data/performanceData';
 
-export default function Performance() {
+// Stats Card Component
+interface StatsCardProps extends PerformanceStat {}
+
+const StatsCard: React.FC<StatsCardProps> = ({ icon, iconBg, title, value, trend, trendColor }) => (
+  <div className="bg-white rounded-2xl border border-gray-200 p-6">
+    <div 
+      className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+      style={{ backgroundColor: iconBg }}
+    >
+      {icon}
+    </div>
+    <div className="text-gray-600 mb-1">{title}</div>
+    <div className="text-2xl font-semibold text-gray-900 mb-2">{value}</div>
+    <div className="text-sm font-normal" style={{ color: trendColor }}>
+      {trend}
+    </div>
+  </div>
+);
+
+// Organization Card Component
+interface OrganizationCardProps extends Organization {}
+
+const OrganizationCard: React.FC<OrganizationCardProps> = ({
+  name,
+  location,
+  type,
+  medal,
+  events,
+  projects,
+  progress,
+  peopleHelped,
+  score
+}) => {
+  const medalBgColors: { [key: string]: string } = {
+    '🥇': '#FEF9C2',
+    '🥈': '#E5E7EB',
+    '🥉': '#FFEDD4'
+  };
+
+  const typeBgColors = {
+    School: { bg: '#DBEAFE', text: '#1447E6' },
+    NGO: { bg: '#F3E8FF', text: '#8200DB' }
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+      {/* Left: Medal & Info */}
+      <div className="flex items-center gap-4">
+        <div 
+          className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+          style={{ backgroundColor: medal ? medalBgColors[medal] : '#F3F4F6' }}
+        >
+          {medal || '🌍'}
+        </div>
+        
         <div>
-          <h2 className="text-gray-850 font-semibold">Performance Insights</h2>
-          <p className="text-gray-600">Track your global impact and discover insights across schools and SDGs.</p>
-        </div>
-        <button className="bg-orange-brand text-white px-4 py-2 rounded">Download Report</button>
-      </div>
-
-      <div className="grid md:grid-cols-4 gap-4">
-        <SummaryCard title="Schools Supported" value="5" iconBg="#E8F1FF" icon={"🏫"} trend="+50% this quarter" />
-        <SummaryCard title="Activities Sponsored" value="18" iconBg="#E7F8ED" icon={"🌿"} trend="+35% this quarter" />
-        <SummaryCard title="SDGs Impacted" value="10" iconBg="#EFE7FF" icon={"🎯"} trend="Across 17 goals" />
-        <SummaryCard title="Students Reached" value="4,160" iconBg="#FFF3E5" icon={"👨‍🎓"} trend="+28% this quarter" />
-      </div>
-
-      <div className="space-y-3">
-        <h3 className="text-gray-850 font-semibold">Top Performing Organizations</h3>
-        <div className="flex gap-2">
-          {["All", "Schools", "NGOs / Clubs"].map((f) => (
-            <button key={f} className={`px-3 py-1 rounded border ${f==="All" ? "border-orange-brand text-orange-brand" : "border-gray-300 text-gray-700"}`}>{f}</button>
-          ))}
-        </div>
-
-        {[
-          { name: "Eco Warriors Academy", city: "Denver", type: "School", events: 9, progress: 88, score: 200, medal: "🥇" },
-          { name: "Green Valley High School", city: "San Francisco", type: "School", events: 8, progress: 75, score: 195, medal: "🥈" },
-          { name: "Clean Water Initiative", city: "Austin", type: "NGO", projects: 7, helped: 8500, score: 190, medal: "🥉" }
-        ].map((o) => (
-          <div key={o.name} className="bg-white border rounded p-4 shadow-card flex items-center justify-between">
-            <div>
-              <div className="font-semibold text-gray-850">{o.medal} {o.name}</div>
-              <div className="text-sm text-gray-600">{o.city} • <span className="px-2 py-1 text-xs rounded bg-gray-100">{o.type}</span></div>
-              <div className="text-sm text-gray-700 mt-1">{o.events ? `${o.events} events` : `${o.projects} projects • ${o.helped} people helped`}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm">Progress: <span className="font-semibold">{o.progress}%</span></div>
-              <div className="text-sm">Score: <span className="font-semibold">{o.score}</span></div>
-            </div>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-normal text-gray-900">{name}</h3>
+            <span 
+              className="px-2 py-0.5 rounded text-xs font-normal"
+              style={{ 
+                backgroundColor: typeBgColors[type].bg,
+                color: typeBgColors[type].text
+              }}
+            >
+              {type}
+            </span>
           </div>
-        ))}
+          <p className="text-gray-600 text-sm">{location}</p>
+        </div>
       </div>
 
-      <div className="space-y-3">
-        <h3 className="text-gray-850 font-semibold">Regional Impact Overview</h3>
-        <div className="grid md:grid-cols-3 gap-4">
-          {[
-            { region: "United States", supported: 6, focus: "Climate Action & Clean Energy", reach: 4160, participation: "92%" },
-            { region: "India", supported: 4, focus: "Quality Education & Clean Water", reach: 2300, participation: "88%" },
-            { region: "EU", supported: 3, focus: "Sustainable Cities", reach: 1450, participation: "85%" }
-          ].map((r) => (
-            <div key={r.region} className="bg-white border rounded p-4 shadow-card">
-              <div className="font-semibold text-gray-850">{r.region}</div>
-              <div className="text-sm text-gray-700">{r.supported} schools supported</div>
-              <div className="text-sm text-gray-700">Primary Focus: {r.focus}</div>
-              <div className="text-sm text-gray-700">Total Reach: {r.reach} students • {r.participation} participation</div>
+      {/* Center: Stats */}
+      <div className="flex items-start gap-12">
+        <div className="text-sm">
+          <div className="flex items-center gap-2 text-gray-900 mb-1">
+            <Activity className="w-4 h-4 text-orange-600" />
+            <span>{events ? `${events} events` : `${projects} projects`}</span>
+          </div>
+          {progress !== undefined ? (
+            <div className="flex items-center gap-2 text-gray-600">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+              <span>{progress} % progress</span>
             </div>
-          ))}
+          ) : (
+            <div className="flex items-center gap-2 text-gray-600">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+              <span>{peopleHelped?.toLocaleString()} people helped</span>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Score */}
+        <div className="text-right">
+          <div className="text-gray-600 text-sm mb-1">Performance Score</div>
+          <div className="text-orange-600 font-semibold text-lg">{score}</div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+// Main Component
+const PerformanceInsights: React.FC = () => {
+  const [activeFilter, setActiveFilter] = useState<'All' | 'Schools' | 'NGOs / Clubs'>('All');
+
+  const filters: ('All' | 'Schools' | 'NGOs / Clubs')[] = ['All', 'Schools', 'NGOs / Clubs'];
+
+  const filteredOrganizations = topOrganizations.filter(org => {
+    if (activeFilter === 'All') return true;
+    if (activeFilter === 'Schools') return org.type === 'School';
+    if (activeFilter === 'NGOs / Clubs') return org.type === 'NGO';
+    return true;
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-normal text-gray-900 mb-2">Performance Insights</h1>
+            <p className="text-gray-600">
+              Track your global impact and discover insights across schools and SDGs.
+            </p>
+          </div>
+          <button className="flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 transition-colors">
+            <Download className="w-5 h-5" />
+            Download Report
+          </button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-4 gap-4">
+          {performanceStats.map((stat, idx) => (
+            <StatsCard key={idx} {...stat} />
+          ))}
+        </div>
+
+        {/* Top Performing Organizations */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-base font-normal text-gray-900">Top Performing Organizations</h2>
+            
+            <div className="flex gap-2">
+              {filters.map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeFilter === filter
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {filteredOrganizations.map((org) => (
+              <OrganizationCard key={org.id} {...org} />
+            ))}
+          </div>
+        </div>
+
+        {/* Regional Impact Overview */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <h2 className="text-base font-normal text-gray-900 mb-6">Regional Impact Overview</h2>
+          
+          <div className="grid grid-cols-3 gap-4">
+            {regionalImpact.map((region, idx) => (
+              <div key={idx} className="border border-gray-200 rounded-xl p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  {region.icon}
+                  <h3 className="font-normal text-gray-900">{region.region}</h3>
+                </div>
+
+                <p className="text-gray-600 text-sm">{region.supported}</p>
+
+                {region.focus && (
+                  <p className="text-gray-600 text-sm">{region.focus}</p>
+                )}
+
+                {region.participation && (
+                  <p className="text-green-600 text-sm font-medium">{region.participation}</p>
+                )}
+
+                {region.sdgs && (
+                  <div className="flex flex-wrap gap-2">
+                    {region.sdgs.map((sdg) => (
+                      <span
+                        key={sdg.id}
+                        className="px-2 py-0.5 rounded text-white text-xs font-medium"
+                        style={{ backgroundColor: sdg.color }}
+                      >
+                        {sdg.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {region.states && (
+                  <div className="flex flex-wrap gap-2">
+                    {region.states.map((state) => (
+                      <span
+                        key={state}
+                        className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-xs"
+                      >
+                        {state}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PerformanceInsights;

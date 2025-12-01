@@ -1,30 +1,22 @@
-// src/components/layout/Sidebar.tsx
-
 import { NavLink } from "react-router-dom";
-import { Home, Globe, Heart, DollarSign, TrendingUp, MessageSquare, User } from "lucide-react";
-
+import { Home, Globe, Heart, FileCheck, DollarSign, TrendingUp, MessageSquare, User } from "lucide-react";
 
 const items = [
-  { to: "/dashboard",      label: "Dashboard Overview",     icon: Home },
-  { to: "/explore",        label: "Explore Organizations",  icon: Globe },
-  { to: "/sponsorships",   label: "Sponsorships",           icon: Heart },
-  { to: "/funding-impact", label: "Funding & Impact",       icon: DollarSign, divider: true },
-  { to: "/performance",    label: "Performance Insights",   icon: TrendingUp },
-  { to: "/messages",       label: "Messages & Feedback",    icon: MessageSquare },
-  { to: "/profile",        label: "Profile & Settings",     icon: User },
+  { to: "/dashboard",          label: "Dashboard Overview",     icon: Home },
+  { to: "/explore",            label: "Explore Organizations",  icon: Globe },
+  { to: "/sponsorships",       label: "Sponsorships",           icon: Heart },
+  { to: "/requests-approvals", label: "Requests & Approvals",   icon: FileCheck, divider: true  }, // NEW ITEM
+  { to: "/funding-impact",     label: "Funding & Impact",       icon: DollarSign},
+  { to: "/performance",        label: "Performance Insights",   icon: TrendingUp },
+  { to: "/messages",           label: "Messages & Feedback",    icon: MessageSquare },
+  { to: "/profile",            label: "Profile & Settings",     icon: User },
 ];
 
 export default function Sidebar() {
   return (
     <aside className="fixed left-0 top-[63px] bottom-0 w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto">
       <div className="flex flex-col h-full">
-        {/* Logo - exact spacing from Figma */}
-        {/* <div className="px-6 pt-8 pb-10">
-          <img src={logo} alt="Planet Crusader" className="h-10 w-auto" />
-        </div> */}
-
-        {/* Navigation Links */}
-        <nav className=" px-6 pt-8 pb-10 flex-1 px-4 pb-8">
+        <nav className="px-6 pt-8 pb-10 flex-1 px-4 pb-8">
           {items.map((item) => {
             const Icon = item.icon;
             return (

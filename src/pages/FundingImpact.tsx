@@ -1,195 +1,361 @@
-import DonutChart from "../components/ui/DonutChart";
-import { fundingOverview, allocations, projects } from "../data/funding";
-import Tabs from "../components/ui/Tabs";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { Download, X } from 'lucide-react';
+import { 
+  fundingOverview, 
+  allocationCategories, 
+  projects,
+  type Project,
+  type ImpactMetric 
+} from '../data/fundingData';
 
-export default function FundingImpact() {
-  const [activeProject, setActiveProject] = useState<string | null>(null);
-  const [tab, setTab] = useState("overview");
+// Progress Bar Component
+const ProgressBar: React.FC<{ percent: number }> = ({ percent }) => (
+  <div className="space-y-2">
+    <div className="flex justify-between items-center text-sm">
+      <span className="text-gray-600">Activity Progress</span>
+      <span className="font-semibold text-gray-900">{percent}%</span>
+    </div>
+    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div 
+        className="h-full rounded-full transition-all duration-500"
+        style={{ 
+          width: `${percent}%`,
+          background: 'linear-gradient(90deg, #FF6900 0%, #00C950 100%)'
+        }}
+      />
+    </div>
+  </div>
+);
 
-  const selected = projects.find((p) => p.id === activeProject);
-
+// Donut Chart Component
+const DonutChart: React.FC<{ used: number; remaining: number }> = ({ used, remaining }) => {
+  const total = used + remaining;
+  const usedPercent = (used / total) * 100;
+  
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-gray-850 font-semibold">Funding & Impact Tracking</h2>
-          <p className="text-gray-600">Access reports and global navigation</p>
-        </div>
-        <button className="bg-orange-brand text-white px-4 py-2 rounded">Download Full Report</button>
-      </div>
-
-      <div className="bg-white border rounded p-4 shadow-card">
-        <div className="text-gray-600 text-sm mb-2">Overview</div>
-        <DonutChart used={fundingOverview.used} remaining={fundingOverview.remaining} />
-        <div className="mt-3 text-sm text-gray-700">
-          Total Sponsored: ${fundingOverview.totalSponsored.toLocaleString()} • Used: ${fundingOverview.used.toLocaleString()} • Remaining: ${fundingOverview.remaining.toLocaleString()}
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-4 gap-4">
-        {allocations.map((a) => {
-          const usage = Math.round((a.used / a.allocated) * 100);
-          return (
-            <div key={a.title} className="bg-white border rounded p-4 shadow-card">
-              <div className="font-semibold text-gray-850">{a.title}</div>
-              <div className="text-sm text-gray-700 mt-1">Allocated: ${a.allocated.toLocaleString()}</div>
-              <div className="text-sm text-gray-700">Used: ${a.used.toLocaleString()}</div>
-              <div className="text-sm text-gray-700">Remaining: ${(a.allocated - a.used).toLocaleString()}</div>
-              <div className="mt-2 h-2 bg-gray-200 rounded">
-                <div className="h-2 bg-green-500 rounded" style={{ width: `${usage}%` }} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="space-y-3">
-        <h3 className="text-gray-850 font-semibold">Project Fund Tracking</h3>
-        <div className="grid gap-4">
-          {projects.map((p) => (
-            <div key={p.id} className="bg-white border rounded p-4 shadow-card">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-gray-850">{p.title}</div>
-                  <div className="text-sm text-gray-600">{p.org}</div>
-                  <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded mt-1 inline-block">{p.status}</span>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveProject(p.id);
-                    setTab("overview");
-                  }}
-                  className="px-3 py-2 border rounded text-blue-600 hover:bg-gray-50"
-                >
-                  View Details
-                </button>
-              </div>
-              <div className="grid md:grid-cols-3 gap-3 text-sm mt-3">
-                <div>Allocated: <span className="font-semibold">${p.allocated.toLocaleString()}</span></div>
-                <div>Spent: <span className="font-semibold">${p.spent.toLocaleString()}</span></div>
-                <div>Remaining: <span className="font-semibold">${p.remaining.toLocaleString()}</span></div>
-              </div>
-              <div className="mt-2 h-2 bg-gray-200 rounded">
-                <div className="h-2 bg-green-500 rounded" style={{ width: `${p.progress}%` }} />
-              </div>
-              <div className="grid md:grid-cols-4 gap-3 text-sm mt-3">
-                <div>Trees Planted: <span className="font-semibold">{p.impact.treesPlanted}</span></div>
-                <div>CO₂ Reduced: <span className="font-semibold">{p.impact.co2Reduced}</span></div>
-                <div>Students Engaged: <span className="font-semibold">{p.impact.studentsEngaged}</span></div>
-                <div>Activities Completed: <span className="font-semibold">{p.impact.activitiesCompleted}</span></div>
-              </div>
-            </div>
-          ))}
+    <div className="relative w-48 h-48 mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#F3F4F6" strokeWidth="20" />
+        <circle
+          cx="50" cy="50" r="40" fill="none" stroke="#56C02B" strokeWidth="20"
+          strokeDasharray={`${usedPercent * 2.51327} 251.327`}
+          strokeLinecap="round"
+        />
+        <circle
+          cx="50" cy="50" r="40" fill="none" stroke="#F78C3D" strokeWidth="20"
+          strokeDasharray={`${(100 - usedPercent) * 2.51327} 251.327`}
+          strokeDashoffset={`-${usedPercent * 2.51327}`}
+          strokeLinecap="round"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-3xl font-bold text-gray-900">{Math.round(usedPercent)}%</div>
+          <div className="text-sm text-gray-600">Used</div>
         </div>
       </div>
-
-      {/* Right-side modal imitation */}
-      {selected && (
-        <div className="fixed top-0 right-0 w-full md:w-[480px] h-full bg-white shadow-popup border-l border-gray-200 z-50">
-          <div className="flex items-center justify-between px-4 py-3 border-b">
-            <div>
-              <div className="font-semibold text-gray-850">{selected.title}</div>
-              <div className="text-sm text-gray-600">{selected.org}</div>
-            </div>
-            <button onClick={()=>setActiveProject(null)} className="px-3 py-1 bg-orange-brand text-white rounded">Close</button>
-          </div>
-          <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
-            <Tabs
-              items={[
-                {
-                  key: "overview",
-                  label: "Overview",
-                  content: (
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-gray-50 p-3 rounded">
-                        <div className="text-xs text-gray-600">Total Allocated</div>
-                        <div className="font-semibold">${selected.allocated.toLocaleString()}</div>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded">
-                        <div className="text-xs text-gray-600">Amount Spent</div>
-                        <div className="font-semibold">${selected.spent.toLocaleString()}</div>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded">
-                        <div className="text-xs text-gray-600">Remaining</div>
-                        <div className="font-semibold">${selected.remaining.toLocaleString()}</div>
-                      </div>
-                      <div className="col-span-3 mt-2 text-sm">
-                        Impact: Trees {selected.impact.treesPlanted}, CO₂ {selected.impact.co2Reduced}, Students {selected.impact.studentsEngaged}, Activities {selected.impact.activitiesCompleted}
-                      </div>
-                    </div>
-                  )
-                },
-                {
-                  key: "fund",
-                  label: "Fund Breakdown",
-                  content: (
-                    <div className="space-y-2">
-                      {[
-                        { name: "Energy Audit", amount: 3800 },
-                        { name: "Cargo Logistics", amount: 2400 },
-                        { name: "LED Lighting", amount: 5500 }
-                      ].map((row) => (
-                        <div key={row.name} className="flex items-center justify-between border-b pb-2">
-                          <div className="text-sm text-gray-700">{row.name}</div>
-                          <div className="text-sm font-semibold text-green-600">${row.amount.toLocaleString()}</div>
-                        </div>
-                      ))}
-                      <div className="text-right text-sm text-gray-600">Total shown: $11,700</div>
-                    </div>
-                  )
-                },
-                {
-                  key: "timeline",
-                  label: "Timeline",
-                  content: (
-                    <ul className="space-y-2">
-                      <li className="text-sm">✓ Phase 1 Completed</li>
-                      <li className="text-sm">✓ ECO Audit Conducted</li>
-                      <li className="text-sm">LED Installation Complete (3 locations)</li>
-                    </ul>
-                  )
-                },
-                {
-                  key: "docs",
-                  label: "Proof Docs",
-                  content: (
-                    <div className="space-y-2">
-                      {["Invoice_001.pdf", "Receipt_203.png", "Audit_Report.pdf"].map((f) => (
-                        <div key={f} className="flex items-center justify-between border-b pb-2">
-                          <div className="text-sm text-gray-700">{f}</div>
-                          <button className="text-sm px-3 py-1 bg-orange-brand text-white rounded">Download</button>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                },
-                {
-                  key: "transactions",
-                  label: "Transactions",
-                  content: (
-                    <div className="space-y-2">
-                      {[
-                        { title: "Vendor Payment", vendor: "EcoAudit LLC", amount: 8200, date: "2024-09-12" },
-                        { title: "Materials Purchase", vendor: "GreenSupply Co.", amount: 3500, date: "2024-10-02" }
-                      ].map((t) => (
-                        <div key={t.title + t.date} className="grid grid-cols-4 gap-2 border-b pb-2 text-sm">
-                          <div>{t.title}</div>
-                          <div className="text-gray-600">{t.vendor}</div>
-                          <div className="text-green-600 font-semibold">${t.amount.toLocaleString()}</div>
-                          <div className="text-gray-600">{new Date(t.date).toLocaleDateString()}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                }
-              ]}
-              active={tab}
-              onChange={setTab}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
+};
+
+// Updated Centered Modal
+interface ProjectDetailModalProps {
+  project: Project;
+  onClose: () => void;
 }
+
+const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project, onClose }) => {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'fund', label: 'Fund Breakdown' },
+    { id: 'timeline', label: 'Timeline' },
+    { id: 'docs', label: 'Proof Docs' },
+    { id: 'transactions', label: 'Transactions' }
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0" onClick={onClose} />
+
+      {/* Modal Panel - Exactly like your Figma */}
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col" style={{ maxHeight: '90vh' }}>
+        
+        {/* Header */}
+        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200">
+          <div>
+            <h2 className="text-2xl font-normal text-gray-900">{project.title}</h2>
+            <p className="text-gray-600 mt-1">{project.org}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-3 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <X className="w-6 h-6 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="border-b border-gray-200">
+          <div className="flex px-8 space-x-8 overflow-x-auto scrollbar-hide">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`py-4 px-1 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'border-orange-600 text-orange-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-8">
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+              {/* Financial Summary Cards */}
+              <div className="grid grid-cols-3 gap-6">
+                <div className="bg-blue-50 rounded-2xl p-6 text-center">
+                  <div className="text-gray-600 mb-2">Total Allocated</div>
+                  <div className="text-2xl font-semibold text-blue-600">
+                    ${project.allocated.toLocaleString()}
+                  </div>
+                </div>
+                <div className="bg-green-50 rounded-2xl p-6 text-center">
+                  <div className="text-gray-600 mb-2">Amount Spent</div>
+                  <div className="text-2xl font-semibold text-green-600">
+                    ${project.spent.toLocaleString()}
+                  </div>
+                </div>
+                <div className="bg-orange-50 rounded-2xl p-6 text-center">
+                  <div className="text-gray-600 mb-2">Remaining</div>
+                  <div className="text-2xl font-semibold text-orange-600">
+                    ${project.remaining.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              {/* Impact Metrics */}
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-6">Impact Metrics</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  {project.impactMetrics.map((metric, idx) => (
+                    <div key={idx} className="border border-gray-200 rounded-2xl p-6">
+                      <div className="text-gray-600 mb-3">{metric.label}</div>
+                      <div className="text-2xl font-semibold text-gray-900">{metric.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {['fund', 'timeline', 'docs', 'transactions'].includes(activeTab) && (
+            <div className="text-center py-24 text-gray-500 text-lg">
+              {activeTab === 'fund' && 'Fund breakdown details coming soon...'}
+              {activeTab === 'timeline' && 'Project timeline will appear here'}
+              {activeTab === 'docs' && 'Proof documents and receipts will be uploaded here'}
+              {activeTab === 'transactions' && 'Full transaction history coming soon'}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-gray-200 px-8 py-6">
+          <button
+            onClick={onClose}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-4 rounded-2xl transition-colors text-lg"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main Component
+const FundingImpact: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  return (
+    <>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto space-y-8">
+
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-normal text-gray-900 mb-2">
+                Funding & Impact Tracking
+              </h1>
+              <p className="text-gray-600">
+                Track how your funds are being used and the real-world impact they create.
+              </p>
+            </div>
+            <button className="flex items-center gap-3 px-6 py-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 transition-colors font-medium">
+              <Download className="w-5 h-5" />
+              Download Full Report
+            </button>
+          </div>
+
+          {/* Funding Overview */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-8">
+            <h2 className="text-xl font-normal text-gray-900 mb-8">Funding Overview</h2>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="bg-blue-50 rounded-2xl p-6">
+                  <div className="text-gray-600 mb-2">Total Amount Sponsored</div>
+                  <div className="text-3xl font-semibold text-blue-600">
+                    ${fundingOverview.totalSponsored.toLocaleString()}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-green-50 rounded-2xl p-6">
+                    <div className="text-gray-600 mb-2">Amount Used</div>
+                    <div className="text-2xl font-semibold text-green-600">
+                      ${fundingOverview.used.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">{fundingOverview.usedPercentage}% used</div>
+                  </div>
+                  <div className="bg-orange-50 rounded-2xl p-6">
+                    <div className="text-gray-600 mb-2">Remaining</div>
+                    <div className="text-2xl font-semibold text-orange-600">
+                      ${fundingOverview.remaining.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">{(100 - fundingOverview.usedPercentage).toFixed(1)}% available</div>
+                  </div>
+                </div>
+              </div>
+              <DonutChart used={fundingOverview.used} remaining={fundingOverview.remaining} />
+            </div>
+          </div>
+
+          {/* Allocation Breakdown */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-8">
+            <h2 className="text-xl font-normal text-gray-900 mb-8">Allocation Breakdown</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {allocationCategories.map((cat, i) => (
+                <div key={i} className="border border-gray-200 rounded-2xl p-6 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-orange-100 to-green-100 rounded-2xl flex items-center justify-center text-3xl">
+                      {cat.icon}
+                    </div>
+                    <h3 className="font-medium text-gray-900">{cat.title}</h3>
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Allocated</span>
+                      <span className="font-semibold">${cat.allocated.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Used</span>
+                      <span className="font-semibold text-green-600">${cat.used.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Remaining</span>
+                      <span className="font-semibold text-orange-600">${cat.remaining.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-gray-600">Usage</span>
+                      <span className="font-semibold">{cat.usage}%</span>
+                    </div>
+                    <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{
+                          width: `${cat.usage}%`,
+                          background: 'linear-gradient(90deg, #FF6900 0%, #00C950 100%)'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Projects List */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-8">
+            <h2 className="text-xl font-normal text-gray-900 mb-8">Activity-Level Fund Tracking</h2>
+            <div className="space-y-6">
+              {projects.map((project) => (
+                <div key={project.id} className="border border-gray-200 rounded-2xl p-6 hover:border-gray-300 transition-colors">
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-medium text-gray-900">{project.title}</h3>
+                        <span className="px-3 py-1 bg-orange-50 text-orange-600 text-xs font-medium rounded-full">
+                          {project.type}
+                        </span>
+                      </div>
+                      <p className="text-gray-600">{project.org}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {project.badge && (
+                        <span className="px-4 py-2 bg-green-100 text-green-800 text-sm font-medium rounded-lg border border-green-200">
+                          {project.badge}
+                        </span>
+                      )}
+                      <button
+                        onClick={() => setSelectedProject(project)}
+                        className="px-5 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-xl hover:bg-orange-700 transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-6 mb-6">
+                    <div className="bg-gray-50 rounded-2xl p-4 text-center">
+                      <div className="text-gray-600 text-sm mb-1">Allocated</div>
+                      <div className="font-semibold text-gray-900">${project.allocated.toLocaleString()}</div>
+                    </div>
+                    <div className="bg-green-50 rounded-2xl p-4 text-center">
+                      <div className="text-gray-600 text-sm mb-1">Spent</div>
+                      <div className="font-semibold text-green-600">${project.spent.toLocaleString()}</div>
+                    </div>
+                    <div className="bg-orange-50 rounded-2xl p-4 text-center">
+                      <div className="text-gray-600 text-sm mb-1">Remaining</div>
+                      <div className="font-semibold text-orange-600">${project.remaining.toLocaleString()}</div>
+                    </div>
+                  </div>
+
+                  <ProgressBar percent={project.progress} />
+
+                  <div className="grid grid-cols-4 gap-4 mt-6">
+                    {project.impactMetrics.map((m, i) => (
+                      <div key={i} className="bg-blue-50 rounded-2xl p-4 text-center">
+                        <div className="text-xs text-gray-600 mb-1">{m.label}</div>
+                        <div className="font-semibold text-blue-700">{m.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Centered Modal */}
+      {selectedProject && (
+        <ProjectDetailModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
+    </>
+  );
+};
+
+export default FundingImpact;

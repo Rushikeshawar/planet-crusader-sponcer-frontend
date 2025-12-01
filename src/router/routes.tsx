@@ -7,7 +7,9 @@ import ProtectedLayout from "../components/layout/ProtectedLayout";
 import Dashboard from "../pages/Dashboard";
 import Explore from "../pages/Explore";
 import SchoolDetail from "../pages/SchoolDetail";
+import NGODetail from "../pages/NGODetail"; // NEW IMPORT
 import Sponsorships from "../pages/Sponsorships";
+import RequestsApprovals from "../pages/RequestsApprovals";
 import FundingImpact from "../pages/FundingImpact";
 import Performance from "../pages/Performance";
 import Messages from "../pages/Messages";
@@ -25,7 +27,9 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/explore", element: <Explore /> },
       { path: "/school/:id", element: <SchoolDetail /> },
+      { path: "/ngo/:id", element: <NGODetail /> }, // NEW ROUTE
       { path: "/sponsorships", element: <Sponsorships /> },
+      { path: "/requests-approvals", element: <RequestsApprovals /> },
       { path: "/funding-impact", element: <FundingImpact /> },
       { path: "/performance", element: <Performance /> },
       { path: "/messages", element: <Messages /> },

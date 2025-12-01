@@ -1,164 +1,234 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { organizations } from "../data/organizations";
-import { useState } from "react";
-import { ArrowLeft, Globe } from "lucide-react";
-import Modal from "../components/ui/Modal";
-import SponsorForm from "../components/forms/SponsorForm";
-import ProgressBar from "../components/ui/ProgressBar";
 
-export default function SchoolDetail() {
-  const { id } = useParams();
+
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { ChevronLeft, MapPin, Users, Calendar, Target } from 'lucide-react';
+import { schoolData } from '../data/schoolData';
+import { Modal } from '../components/reusable/Modal';
+import { ProgressBar } from '../components/reusable/ProgressBar';
+import { SponsorForm } from '../components/reusable/SponsorForm';
+
+const SchoolDetail: React.FC = () => {
   const navigate = useNavigate();
-  const school = organizations.find((o) => o.id === id);
-  const [openSponsor, setOpenSponsor] = useState(false);
+  const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [sponsorType, setSponsorType] = useState<'school' | 'roadmap'>('school');
+  const [selectedRoadmap, setSelectedRoadmap] = useState<string | null>(null);
+  
+  const school = schoolData;
 
-  if (!school) {
-    return (
-      <div className="p-6">
-        <div className="text-center">
-          <p className="text-gray-600">School not found</p>
-          <button 
-            onClick={() => navigate(-1)} 
-            className="mt-4 text-sm px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const openSponsorModal = (type: 'school' | 'roadmap', roadmapTitle?: string) => {
+    setSponsorType(type);
+    setSelectedRoadmap(roadmapTitle || null);
+    setSponsorModalOpen(true);
+  };
 
   return (
-    <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
-      {/* Back Button */}
-      <button 
-        onClick={() => navigate(-1)} 
-        className="flex items-center gap-2 text-sm px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </button>
-
-      {/* School Header */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
+        {/* School Header */}
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
-            <Globe className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-1">{school.name}</h2>
-            <p className="text-gray-600 mb-3">{school.location}</p>
-            <p className="text-gray-700">{school.desc}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">Students</div>
-          <div className="text-2xl font-semibold text-gray-900">{school.students}</div>
-        </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">Events</div>
-          <div className="text-2xl font-semibold text-gray-900">{school.events}</div>
-        </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">SDG Goals</div>
-          <div className="text-2xl font-semibold text-gray-900">{school.goals}</div>
-        </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex items-center justify-center">
-          <button 
-            onClick={() => setOpenSponsor(true)} 
-            className="w-full bg-orange-brand text-white rounded-xl py-3 font-semibold hover:bg-orange-600 transition-colors shadow-sm"
-          >
-            Sponsor this School
-          </button>
-        </div>
-      </div>
-
-      {/* SDG Focus Areas */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">SDG Focus Areas</h3>
-        <div className="flex gap-2 flex-wrap">
-          {school.sdg.map((sdg) => (
-            <span key={sdg} className="px-3 py-2 bg-green-50 text-green-700 text-sm font-medium rounded-lg border border-green-200">
-              {sdg}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Activity Roadmap */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900">Activity Roadmap (SDG 13)</h3>
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
-          <div className="font-semibold text-gray-900 text-lg">Carbon Neutral Campus 2025</div>
-          
-          <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="text-gray-600">Timeline: </span>
-              <span className="font-semibold text-gray-900">12 months</span>
-            </div>
-            <div>
-              <span className="text-gray-600">Funding Needed: </span>
-              <span className="font-semibold text-gray-900">$50,000</span>
-            </div>
-            <div>
-              <span className="text-gray-600">Funding Received: </span>
-              <span className="font-semibold text-gray-900">$34,000</span>
-            </div>
-          </div>
-          
-          <ProgressBar percent={68} color="#3B82F6" />
-          
           <button
-            onClick={() => setOpenSponsor(true)}
-            className="mt-4 bg-orange-brand text-white rounded-xl px-6 py-2.5 font-medium hover:bg-orange-600 transition-colors shadow-sm"
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-[14px] flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
-            Sponsor this Roadmap
+            <ChevronLeft size={24} className="text-gray-700" />
           </button>
-        </div>
-      </div>
 
-      {/* Recently Completed Activities */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900">Recently completed activities</h3>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <div className="font-semibold text-gray-900 mb-2">Tree Plantation Drive</div>
-            <p className="text-sm text-gray-700 mb-3">5000 native trees planted in the school campus and nearby community park</p>
-            <div className="text-xs text-gray-500 mb-2">Completed 203 days ago</div>
-            <div className="text-sm text-gray-700 bg-green-50 rounded-lg px-3 py-2 border border-green-100">
-              500 trees planted • 12 tons CO₂/year offset
+          <div className="flex-1">
+            <h1 className="text-xl font-normal text-gray-900 mb-1">{school.name}</h1>
+            <div className="flex items-center gap-2 text-gray-600">
+              <MapPin className="w-4 h-4" />
+              <span>{school.location}</span>
             </div>
           </div>
-          
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <div className="font-semibold text-gray-900 mb-2">Waste-Free Week</div>
-            <p className="text-sm text-gray-700 mb-3">Week-long campaign to eliminate single-use plastics</p>
-            <div className="text-xs text-gray-500 mb-2">Completed 340 days ago</div>
-            <div className="text-sm text-gray-700 bg-green-50 rounded-lg px-3 py-2 border border-green-100">
-              1,200 kg waste diverted • 420 students participated
+        </div>
+
+        {/* School Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          {/* Header Image */}
+          <div 
+            className="h-64 flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #FFD6A7 0%, #B9F8CF 100%)' }}
+          >
+            <div className="text-8xl">{school.logo}</div>
+          </div>
+
+          {/* Content */}
+          <div className="p-8 space-y-6">
+            <p className="text-gray-600">{school.desc}</p>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-orange-50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-orange-600" />
+                  <span className="text-orange-600 font-medium">Students</span>
+                </div>
+                <div className="text-2xl font-semibold text-gray-900">{school.students}</div>
+              </div>
+
+              <div className="bg-green-50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="w-5 h-5 text-green-600" />
+                  <span className="text-green-600 font-medium">Active Events</span>
+                </div>
+                <div className="text-2xl font-semibold text-gray-900">{school.events}</div>
+              </div>
+
+              <div className="bg-blue-50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target className="w-5 h-5 text-blue-600" />
+                  <span className="text-blue-600 font-medium">SDG Focus</span>
+                </div>
+                <div className="text-2xl font-semibold text-gray-900">{school.goals} Goals</div>
+              </div>
             </div>
+
+            {/* Sponsor Button */}
+            <button
+              onClick={() => openSponsorModal('school')}
+              className="w-full bg-orange-600 text-white rounded-xl py-3 font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Sponsor this School
+            </button>
+          </div>
+        </div>
+
+        {/* SDG Focus Areas */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <h2 className="text-base font-normal text-gray-900 mb-4">SDG Focus Areas</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {school.sdg.map((sdg) => (
+              <div
+                key={sdg.id}
+                className="p-4 rounded-xl text-white"
+                style={{ backgroundColor: sdg.color }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <span className="text-white font-normal">{sdg.id}</span>
+                  </div>
+                  <div>
+                    <div className="text-sm opacity-90">SDG {sdg.id}</div>
+                    <div className="font-normal">{sdg.name}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Active Roadmaps */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <h2 className="text-base font-normal text-gray-900 mb-4">Active Roadmaps</h2>
+          
+          <div className="border border-gray-200 rounded-xl p-4 space-y-4">
+            {/* Header */}
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-base font-normal text-gray-900 mb-1">
+                  {school.roadmap.title}
+                </h3>
+                <p className="text-gray-600 text-sm">{school.roadmap.desc}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="px-3 py-1.5 bg-green-100 border border-black/10 rounded-lg text-sm">
+                  {school.roadmap.badge}
+                </div>
+                <div className="px-3 py-1.5 bg-[#3F7E44] text-white rounded-lg text-sm">
+                  SDG 13
+                </div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <div className="text-gray-600 text-sm mb-1">Timeline</div>
+                <div className="font-semibold text-gray-900">{school.roadmap.timeline}</div>
+              </div>
+              <div>
+                <div className="text-gray-600 text-sm mb-1">Funding Needed</div>
+                <div className="font-semibold text-gray-900">${school.roadmap.fundingNeeded.toLocaleString()}</div>
+              </div>
+              <div>
+                <div className="text-gray-600 text-sm mb-1">Funding Received</div>
+                <div className="font-semibold text-green-600">${school.roadmap.fundingReceived.toLocaleString()}</div>
+              </div>
+            </div>
+
+            {/* Progress */}
+            <ProgressBar percent={school.roadmap.progress} />
+
+            {/* Sponsor Button */}
+            <button
+              onClick={() => openSponsorModal('roadmap', school.roadmap.title)}
+              className="w-full bg-orange-600 text-white rounded-xl py-2.5 font-medium hover:bg-orange-700 transition-colors"
+            >
+              Sponsor this Roadmap
+            </button>
+          </div>
+        </div>
+
+        {/* Recent Completed Activities */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <h2 className="text-base font-normal text-gray-900 mb-4">Recent Completed Activities</h2>
+          
+          <div className="grid grid-cols-2 gap-4">
+            {school.activities.map((activity, idx) => (
+              <div key={idx} className="border border-gray-200 rounded-xl p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <h3 className="font-normal text-gray-900">{activity.title}</h3>
+                  <span 
+                    className="px-2 py-0.5 text-white text-xs rounded"
+                    style={{ backgroundColor: school.sdg.find(s => s.id === activity.sdg)?.color }}
+                  >
+                    SDG {activity.sdg}
+                  </span>
+                </div>
+                
+                <p className="text-sm text-gray-600">{activity.desc}</p>
+                
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {activity.participants}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {activity.date}
+                  </div>
+                </div>
+                
+                <div className="bg-green-50 rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-sm text-green-700">
+                    <Target className="w-4 h-4" />
+                    {activity.impact}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Sponsor Modal */}
-      <Modal open={openSponsor} title="Sponsor Roadmap" onClose={() => setOpenSponsor(false)}>
-        <SponsorForm
-          org={school.name}
-          roadmap="Carbon Neutral Campus 2025"
-          fundingNeeded={50000}
-          fundingReceived={34000}
-          suggested={25000}
-          onConfirm={(amt, res) => {
-            alert(`Submitted sponsorship: $${amt} | resources: ${res ?? "-"}`);
-            setOpenSponsor(false);
-          }}
+      <Modal
+        isOpen={sponsorModalOpen}
+        onClose={() => setSponsorModalOpen(false)}
+        title={sponsorType === 'school' ? `Sponsor ${school.name}` : `Sponsor Roadmap: ${selectedRoadmap}`}
+      >
+        <SponsorForm 
+          type={sponsorType}
+          organizationName={school.name}
+          organizationLogo={school.logo}
+          organizationLocation={school.location}
+          roadmapTitle={selectedRoadmap || undefined}
         />
       </Modal>
     </div>
   );
-}
+};
+
+export default SchoolDetail;

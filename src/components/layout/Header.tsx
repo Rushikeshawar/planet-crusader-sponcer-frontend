@@ -1,9 +1,29 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../context/AuthContext";
 import { Search, Bell, MessageCircle } from "lucide-react";
 import logo from "../../assets/Planet_Crusader.png";
+import { NotificationsDropdown } from '../notifications';
+import { notificationsData } from '../../data/notifications';
 
 export default function Header() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications] = useState(notificationsData);
+
+  // Count unread notifications
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  // Navigate to messages page
+  const handleMessagesClick = () => {
+    navigate('/messages');
+  };
+
+  // Toggle notifications dropdown
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm w-full">
@@ -29,12 +49,31 @@ export default function Header() {
 
         {/* RIGHT ICONS */}
         <div className="flex items-center gap-3">
-          <button className="relative w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-            <Bell className="w-5 h-5 text-gray-600" />
-            <span className="w-2 h-2 bg-orange-brand rounded-full absolute top-1 right-1"></span>
-          </button>
+          {/* Notifications Button with Dropdown */}
+          <div className="relative">
+            <button 
+              onClick={toggleNotifications}
+              className="relative w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
+            >
+              <Bell className="w-5 h-5 text-gray-600" />
+              {unreadCount > 0 && (
+                <span className="w-2 h-2 bg-orange-brand rounded-full absolute top-1 right-1"></span>
+              )}
+            </button>
 
-          <button className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+            {/* Notifications Dropdown */}
+            <NotificationsDropdown
+              isOpen={isNotificationsOpen}
+              onClose={() => setIsNotificationsOpen(false)}
+              notifications={notifications}
+            />
+          </div>
+
+          {/* Messages Button */}
+          <button 
+            onClick={handleMessagesClick}
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
+          >
             <MessageCircle className="w-5 h-5 text-gray-600" />
           </button>
 
